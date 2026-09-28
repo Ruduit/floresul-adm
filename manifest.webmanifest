@@ -1,0 +1,9 @@
+{
+  "name": "Floresul Administrativo",
+  "short_name": "Floresul ADM",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#143e2e",
+  "theme_color": "#143e2e",
+  "icons": [{"src":"favicon.svg","sizes":"any","type":"image/svg+xml"}]
+}
