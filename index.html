@@ -10,7 +10,7 @@
 </head>
 <body>
   <section id="login" class="login"><main class="card"><div class="brand"><span class="leaf">◒</span> FLORESUL</div><h1>Área Administrativa</h1><p>Informe seu CPF para acessar os recursos administrativos.</p><label for="cpf">CPF</label><input id="cpf" inputmode="numeric" autocomplete="username" placeholder="000.000.000-00" maxlength="14"><button id="enter" class="primary">Entrar</button><div id="status" class="notice" aria-live="polite"></div></main></section>
-  <section id="dashboard" class="dashboard"><header class="top"><div class="brand"><span class="leaf">◒</span> FLORESUL <small style="font-size:.72rem;opacity:.72">ADMINISTRATIVO</small></div><div class="user"><strong id="userName"></strong><span id="userRole"></span></div><button class="logout" id="exit">Sair</button></header><main class="main"><div class="intro"><div><h1>Olá, <span id="firstName"></span></h1><p>Escolha uma área para consultar ou registrar informações.</p></div><div class="tag">Acesso administrativo</div></div><section class="grid" aria-label="Módulos administrativos">
+  <section id="dashboard" class="dashboard"><header class="top"><div class="brand"><span class="leaf">◒</span> FLORESUL <small style="font-size:.72rem;opacity:.72">ADMINISTRATIVO</small></div><div class="user"><strong id="userName"></strong><span id="userRole"></span></div><button class="logout" id="exit">Sair</button></header><main class="main"><div class="intro"><div><h1>Olá, <span id="firstName"></span></h1><p>Escolha uma área para consultar ou registrar informações.</p></div><div style="display:flex;gap:10px;align-items:center"><button class="logout" id="install" style="display:none;color:var(--green);border-color:#8dac92;background:#fff">Instalar aplicativo</button><div class="tag">Acesso administrativo</div></div></div><section class="grid" aria-label="Módulos administrativos">
     <button class="module" data-module="Checklists"><span class="icon">✓</span><h2>Checklists</h2><p>Consultar, acompanhar e exportar inspeções.</p></button>
     <button class="module" data-module="Entregas de serviço"><span class="icon">▣</span><h2>Entregas de serviço</h2><p>Visualizar registros e comprovantes enviados.</p></button>
     <button class="module" data-module="Entregas mensais"><span class="icon">▤</span><h2>Entregas mensais</h2><p>Acompanhar a competência e os anexos mensais.</p></button>
@@ -30,6 +30,11 @@
   function openDashboard(user){document.querySelector('#login').style.display='none';document.querySelector('#dashboard').style.display='block';document.querySelector('#userName').textContent=user.name;document.querySelector('#userRole').textContent=user.role;document.querySelector('#firstName').textContent=(user.name||'').split(' ')[0]||'usuário'}
   document.querySelector('#enter').addEventListener('click',login);cpf.addEventListener('keydown',e=>{if(e.key==='Enter')login()});document.querySelector('#exit').onclick=()=>{sessionStorage.removeItem('floresulUser');location.reload()};
   const modal=document.querySelector('#modal');document.querySelectorAll('.module').forEach(b=>b.onclick=()=>{document.querySelector('#modalTitle').textContent=b.dataset.module;modal.classList.add('open')});document.querySelector('#close').onclick=()=>modal.classList.remove('open');modal.onclick=e=>{if(e.target===modal)modal.classList.remove('open')};
+  let installPrompt;
+  const installButton=document.querySelector('#install');
+  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;installButton.style.display='block'});
+  installButton.onclick=async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;installButton.style.display='none'};
+  window.addEventListener('appinstalled',()=>{installButton.style.display='none'});
   try{const saved=JSON.parse(sessionStorage.getItem('floresulUser'));if(saved)openDashboard(saved)}catch{}if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js');
   </script>
 </body></html>
